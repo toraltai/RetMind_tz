@@ -13,8 +13,6 @@ from io import BytesIO
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django.db.models.signals import post_save, post_delete, pre_delete
-from django.core.cache import cache
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -41,7 +39,7 @@ class TagDestroyAPIView(generics.DestroyAPIView):
 class ProductAPI(viewsets.ModelViewSet):
     queryset = Product.objects.all().select_related('category').prefetch_related('tags')
     serializer_class = ProductSerializer
-    # permission_classes = [IsAuthenticatedViaJWT]
+    permission_classes = [IsAuthenticatedViaJWT]
 
     @method_decorator(cache_page(60))
     def list(self, request, *args, **kwargs):
